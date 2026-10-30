@@ -1,0 +1,43 @@
+{% extends "partials/app_shell.html" %}
+{% block title %}New Consultation — MedGrid{% endblock %}
+{% block role_tag %}Doctor{% endblock %}
+{% block sidebar %}{% include "partials/doctor_sidebar.html" with active="mypatients" %}{% endblock %}
+{% block main_content %}
+<a href="{% url 'doctors:patient_detail' patient.medical_id %}" class="muted" style="font-size:0.85rem;">← Back to patient</a>
+<div class="app-header" style="margin-top:10px;"><div><span class="eyebrow">{{ patient.medical_id }} · {{ patient.user.get_full_name }}</span><h1>New consultation note</h1></div></div>
+<form method="post" class="card" style="max-width:720px;" id="recForm">
+  {% csrf_token %}
+  {% include "partials/_field.html" with field=form.consultation_date %}
+  {% include "partials/_field.html" with field=form.symptoms %}
+  {% include "partials/_field.html" with field=form.diagnosis %}
+  {% include "partials/_field.html" with field=form.treatment_details %}
+  {% include "partials/_field.html" with field=form.follow_up_notes %}
+  {% include "partials/_field.html" with field=form.discharge_summary %}
+  {% include "partials/_field.html" with field=form.status %}
+  <h3 style="margin-top:20px;">Prescriptions</h3>
+  <div id="rx">
+    {% for r in rows %}
+    <div class="form-row rx-row">
+      <div class="form-group"><label>Medication</label><input type="text" name="medication_name" maxlength="200" value="{{ r.medication_name|default:'' }}"></div>
+      <div class="form-group"><label>Dosage</label><input type="text" name="dosage" maxlength="100" value="{{ r.dosage|default:'' }}"></div>
+      <div class="form-group"><label>Frequency</label><input type="text" name="frequency" maxlength="100" value="{{ r.frequency|default:'' }}"></div>
+      <div class="form-group"><label>Duration</label><input type="text" name="duration" maxlength="100" value="{{ r.duration|default:'' }}"></div>
+    </div>
+    {% endfor %}
+  </div>
+  <button type="button" class="btn btn-sm btn-outline" id="addRx">+ Add another medication</button>
+  <button type="submit" class="btn btn-primary btn-block" style="margin-top:20px;" id="recSubmit">Save record</button>
+</form>
+<script>
+  document.getElementById('addRx').addEventListener('click', function () {
+    var rows = document.querySelectorAll('.rx-row');
+    if (rows.length >= 20) return;
+    var c = rows[rows.length - 1].cloneNode(true);
+    c.querySelectorAll('input').forEach(function (i) { i.value = ''; });
+    document.getElementById('rx').appendChild(c);
+  });
+  document.getElementById('recForm').addEventListener('submit', function () {
+    var b = document.getElementById('recSubmit'); b.disabled = true; b.textContent = 'Saving…';
+  });
+</script>
+{% endblock %}

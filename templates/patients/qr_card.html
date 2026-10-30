@@ -1,0 +1,42 @@
+{% extends "partials/app_shell.html" %}
+{% block title %}My QR Health Card — MedGrid{% endblock %}
+{% block role_tag %}Patient{% endblock %}
+{% block sidebar %}{% include "partials/patient_sidebar.html" with active="qr" %}{% endblock %}
+{% block main_content %}
+<div class="app-header"><div><span class="eyebrow">Digital health card</span><h1>Your Medical ID</h1></div>
+  <span class="badge {% if qr.is_usable %}badge-primary{% else %}badge-info{% endif %}">QR {{ qr.state_label }}</span></div>
+<div style="display:flex; gap:40px; flex-wrap:wrap; align-items:flex-start;">
+  <div class="health-card">
+    <div class="health-card-top">
+      <span class="badge-mark">MedGrid Digital Health Card</span>
+      <div class="health-card-qr">
+        {% if qr.is_usable %}<img src="{% url 'patients:qr_image' %}" alt="Your QR code">{% else %}<div style="padding:30px; font-size:0.8rem; text-align:center;">QR disabled</div>{% endif %}
+      </div>
+    </div>
+    <div class="health-card-name">{{ profile.user.get_full_name }}</div>
+    <div class="health-card-id">{{ profile.medical_id }}</div>
+    <div class="health-card-foot">
+      <span>Blood Group: {{ profile.get_blood_group_display }}</span>
+      <span>Organ Donor: {{ profile.organ_donor|yesno:"Yes,No" }}</span>
+    </div>
+  </div>
+  <div style="max-width:380px; flex:1;">
+    <div class="card" style="margin-bottom:20px;">
+      <h3>Download or print</h3>
+      <p>The QR code holds only a secret link — <strong>no medical data</strong>. Whoever scans it must sign in, and sees only what you've allowed.</p>
+      {% if qr.is_usable %}<a href="{% url 'patients:qr_download' %}" class="btn btn-primary btn-block">Download QR Code (PNG)</a>{% endif %}
+      {% if qr.expires_at %}<p class="muted" style="font-size:0.82rem; margin-top:10px;">This code {% if qr.is_expired %}expired{% else %}expires{% endif %} on {{ qr.expires_at|date:"M d, Y" }}.</p>{% endif %}
+    </div>
+    <div class="card">
+      <h3>Lost your card or shared it by mistake?</h3>
+      <p>Generate a new code. The old one stops working immediately.</p>
+      <form method="post" action="{% url 'patients:qr_rotate' %}" onsubmit="return confirm('Generate a new QR code? Your current one will stop working.');">
+        {% csrf_token %}<button class="btn btn-outline btn-block" type="submit">Generate a new QR code</button></form>
+      {% if qr.is_usable %}
+      <form method="post" action="{% url 'patients:qr_revoke' %}" style="margin-top:10px;" onsubmit="return confirm('Disable your QR code until you generate a new one?');">
+        {% csrf_token %}<button class="btn btn-outline btn-block" type="submit">Disable my QR code</button></form>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

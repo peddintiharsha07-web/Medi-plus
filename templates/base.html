@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}MedGrid — Digital Medical Record Management{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container">
+      <a href="{% url 'core:home' %}" class="brand">
+        <span class="mark">MG</span> MedGrid
+      </a>
+      <div class="nav-links">
+        <a href="{% url 'core:home' %}">Home</a>
+        <a href="{% url 'core:about' %}">About</a>
+        <a href="{% url 'core:services' %}">Services</a>
+        <a href="{% url 'core:faq' %}">FAQ</a>
+        <a href="{% url 'core:contact' %}">Contact</a>
+      </div>
+      <div class="nav-actions">
+        <form method="get" action="{% url 'core:search' %}" style="display:flex;">
+          <input type="text" name="q" placeholder="Search doctors, hospitals…" style="width:190px; padding:9px 12px; font-size:0.85rem; border-radius: 8px 0 0 8px; border:1px solid var(--line-strong); border-right:none;">
+          <button class="btn btn-primary btn-sm" style="border-radius:0 8px 8px 0;" type="submit">Go</button>
+        </form>
+        {% if user.is_authenticated %}
+          <a href="{% url 'dashboard:home' %}" class="btn btn-outline btn-sm">Dashboard</a>
+          <form method="post" action="{% url 'users:logout' %}" style="display:inline;">{% csrf_token %}<button type="submit" class="btn btn-primary btn-sm">Logout</button></form>
+        {% else %}
+          <a href="{% url 'users:login' %}" class="btn btn-outline btn-sm">Login</a>
+          <a href="{% url 'users:register_choice' %}" class="btn btn-primary btn-sm">Register</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <div class="container" style="padding-top: 18px;">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-error{% elif message.tags == 'success' %}alert-success{% elif message.tags == 'warning' %}alert-warning{% else %}alert-info{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+
+  {% block content %}{% endblock %}
+
+  <footer class="footer">
+    <div class="container">
+      <div>
+        <div class="brand" style="color:#fff; margin-bottom:12px;"><span class="mark">MG</span> MedGrid</div>
+        <p style="color:rgba(255,255,255,0.7); font-size:0.88rem; max-width:320px;">
+          A centralized digital medical record platform connecting patients, doctors, and hospitals
+          through secure, QR-verified Medical IDs.
+        </p>
+      </div>
+      <div>
+        <h4>Platform</h4>
+        <a href="{% url 'core:about' %}">About</a>
+        <a href="{% url 'core:services' %}">Services</a>
+        <a href="{% url 'core:faq' %}">FAQ</a>
+      </div>
+      <div>
+        <h4>Get started</h4>
+        <a href="{% url 'users:register_patient' %}">Register as patient</a>
+        <a href="{% url 'users:register_doctor' %}">Register as doctor</a>
+        <a href="{% url 'users:register_hospital' %}">Register a hospital</a>
+      </div>
+      <div>
+        <h4>Support</h4>
+        <a href="{% url 'core:contact' %}">Contact us</a>
+        <a href="{% url 'users:login' %}">Sign in</a>
+      </div>
+    </div>
+    <div class="footer-bottom">© 2026 MedGrid Digital Medical Record Management System. Built for demonstration purposes.</div>
+  </footer>
+
+</body>
+</html>

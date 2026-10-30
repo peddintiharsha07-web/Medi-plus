@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}FAQ — MedGrid{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container" style="max-width:720px;">
+    <span class="eyebrow">FAQ</span>
+    <h1>Frequently asked questions</h1>
+    <div style="margin-top:24px;">
+      <div class="card" style="margin-bottom:16px;">
+        <h3>How is my Medical ID generated?</h3>
+        <p>A unique Medical ID and matching QR code are generated automatically the moment you register as a patient.</p>
+      </div>
+      <div class="card" style="margin-bottom:16px;">
+        <h3>Who can see my records?</h3>
+        <p>Only you, the doctors you've been treated by, and hospitals you've granted permission to. Every view is logged.</p>
+      </div>
+      <div class="card" style="margin-bottom:16px;">
+        <h3>What happens in an emergency?</h3>
+        <p>Authorized emergency doctors can scan your QR code to see only critical information — blood group, allergies,
+        current medications, chronic conditions, and your emergency contact. You're notified every time this happens.</p>
+      </div>
+      <div class="card">
+        <h3>How do doctors and hospitals join?</h3>
+        <p>Doctors and hospital administrators register and are reviewed and approved by a system administrator before they can log in.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "partials/app_shell.html" %}
+{% block title %}Doctors — MedGrid{% endblock %}
+{% block role_tag %}Hospital Admin{% endblock %}
+{% block sidebar %}
+  <a href="{% url 'dashboard:home' %}" class="sidebar-link">Overview</a>
+  <a href="{% url 'hospitals:manage_departments' %}" class="sidebar-link">Departments</a>
+  <a href="{% url 'hospitals:manage_doctors' %}" class="sidebar-link">Doctors</a>
+  <a href="{% url 'hospitals:manage_staff' %}" class="sidebar-link">Staff</a>
+  <a href="{% url 'hospitals:manage_appointments' %}" class="sidebar-link">Appointments</a>
+  <a href="{% url 'hospitals:share_requests' %}" class="sidebar-link">Record Sharing</a>
+{% endblock %}
+{% block main_content %}
+<div class="app-header"><div><span class="eyebrow">{{ hospital.name }}</span><h1>Doctors</h1></div></div>
+{% if doctors %}
+<table class="data-table">
+  <thead><tr><th>Name</th><th>Specialization</th><th>Department</th><th>License</th><th>Emergency access</th></tr></thead>
+  <tbody>
+  {% for d in doctors %}
+    <tr><td>Dr. {{ d.user.get_full_name }}</td><td>{{ d.specialization }}</td><td>{{ d.department|default:"—" }}</td><td class="mono">{{ d.license_number }}</td>
+    <td>{% if d.is_emergency_authorized %}<span class="badge badge-primary">Authorized</span>{% else %}<span class="badge badge-neutral">Not authorized</span>{% endif %}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="empty-state"><h3>No doctors linked yet</h3><p>Doctors select your hospital when completing their profile after approval.</p></div>
+{% endif %}
+{% endblock %}

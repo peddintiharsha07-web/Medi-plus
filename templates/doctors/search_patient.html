@@ -1,0 +1,31 @@
+{% extends "partials/app_shell.html" %}
+{% block title %}Search Patient — MedGrid{% endblock %}
+{% block role_tag %}Doctor{% endblock %}
+{% block sidebar %}{% include "partials/doctor_sidebar.html" with active="search" %}{% endblock %}
+{% block main_content %}
+<div class="app-header"><div><span class="eyebrow">Patient lookup</span><h1>Find a patient</h1></div></div>
+<form method="get" class="card" style="max-width:480px; margin-bottom:24px;">
+  <div class="form-group"><label>Medical ID</label><input type="text" name="q" value="{{ query }}" placeholder="MED-XXXXXXXX" required></div>
+  <button class="btn btn-primary btn-block" type="submit">Search</button>
+</form>
+{% if error %}<div class="alert alert-error" style="max-width:480px;">{{ error }}</div>{% endif %}
+{% if patient %}
+<div class="card" style="max-width:560px;">
+  <h3>{{ masked_name }} <span class="mono muted">{{ patient.medical_id }}</span></h3>
+  {% if access.can_view_full %}
+    <p class="muted">The patient has shared their records with you{% if access.can_add_consultation %} (you may add consultation notes){% endif %}.</p>
+    <a href="{% url 'doctors:patient_detail' patient.medical_id %}" class="btn btn-primary">Open records</a>
+  {% else %}
+    <p class="muted">You don't have this patient's consent to view their records. Full details are hidden until they approve.</p>
+    <form method="post" action="{% url 'consents:request_access' %}">
+      {% csrf_token %}
+      <input type="hidden" name="medical_id" value="{{ patient.medical_id }}">
+      <input type="hidden" name="next_url" value="{% url 'doctors:my_patients' %}">
+      <div class="form-group"><label>Note to the patient (optional)</label><input type="text" name="note" maxlength="255"></div>
+      <button class="btn btn-primary" type="submit">Request access</button>
+    </form>
+    {% if access.level == EMERGENCY %}<p class="muted" style="margin-top:12px;">Emergency? Scan the patient's QR code to use logged emergency access (critical information only).</p>{% endif %}
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}

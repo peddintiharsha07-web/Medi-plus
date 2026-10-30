@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block title %}MedGrid — One Medical ID. Every Hospital.{% endblock %}
+{% block content %}
+
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <span class="eyebrow">Digital Medical Record Platform</span>
+      <h1>One Medical ID.<br><span>Every hospital you'll ever visit.</span></h1>
+      <p style="font-size:1.08rem; max-width:480px;">
+        MedGrid gives every patient a secure, QR-verified Medical ID that carries their full health
+        history — prescriptions, lab reports, allergies, vaccinations — across any registered hospital,
+        with instant emergency access when seconds matter.
+      </p>
+      <div class="hero-actions">
+        <a href="{% url 'users:register_patient' %}" class="btn btn-primary">Get your Medical ID</a>
+        <a href="{% url 'users:register_doctor' %}" class="btn btn-outline">Register as a doctor</a>
+      </div>
+      <div class="hero-stats">
+        <div><strong>{{ featured_hospitals|length|default:"12" }}+</strong><span>Partner hospitals</span></div>
+        <div><strong>4</strong><span>Role-based portals</span></div>
+        <div><strong>24/7</strong><span>Emergency access mode</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="health-card">
+        <div class="health-card-top">
+          <span class="badge-mark">MedGrid Digital Health Card</span>
+          <div class="health-card-qr">
+            <svg viewBox="0 0 100 100" width="100%" height="100%">
+              <rect width="100" height="100" fill="#fff"/>
+              <g fill="#0B6E4F">
+                <rect x="6" y="6" width="26" height="26"/><rect x="14" y="14" width="10" height="10" fill="#fff"/>
+                <rect x="68" y="6" width="26" height="26"/><rect x="76" y="14" width="10" height="10" fill="#fff"/>
+                <rect x="6" y="68" width="26" height="26"/><rect x="14" y="76" width="10" height="10" fill="#fff"/>
+                <rect x="40" y="10" width="6" height="6"/><rect x="50" y="10" width="6" height="6"/>
+                <rect x="40" y="40" width="6" height="6"/><rect x="50" y="40" width="6" height="6"/>
+                <rect x="60" y="50" width="6" height="6"/><rect x="70" y="60" width="6" height="6"/>
+                <rect x="80" y="40" width="6" height="6"/><rect x="40" y="60" width="6" height="6"/>
+                <rect x="50" y="80" width="6" height="6"/><rect x="60" y="80" width="6" height="6"/>
+                <rect x="80" y="80" width="6" height="6"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div class="health-card-name">Asha Rao</div>
+        <div class="health-card-id">MED-7F3K9QZL</div>
+        <div class="health-card-foot">
+          <span>Blood Group: O+</span>
+          <span>Organ Donor: Yes</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Key services</span>
+      <h2>Everything a modern healthcare record needs</h2>
+    </div>
+    <div class="grid-4">
+      <div class="card">
+        <div class="icon">⛑</div>
+        <h3>Emergency Access</h3>
+        <p>One-click, QR-triggered access to critical info — blood group, allergies, medications — logged and notified instantly.</p>
+      </div>
+      <div class="card">
+        <div class="icon">⌗</div>
+        <h3>QR Medical ID</h3>
+        <p>Every patient gets a unique, scannable Medical ID linking to their full digital health profile.</p>
+      </div>
+      <div class="card">
+        <div class="icon">⇄</div>
+        <h3>Multi-Hospital Sharing</h3>
+        <p>Visit any registered hospital — your history travels with you through permission-based sharing.</p>
+      </div>
+      <div class="card">
+        <div class="icon">◷</div>
+        <h3>Appointments</h3>
+        <p>Book, track, and manage appointments across departments and specializations in real time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Featured doctors</span>
+      <h2>Trusted specialists on the platform</h2>
+    </div>
+    <div class="grid-4">
+      {% for doc in featured_doctors %}
+        <div class="card person-card">
+          <div class="avatar-ring">{{ doc.user.first_name|slice:":1" }}{{ doc.user.last_name|slice:":1" }}</div>
+          <h3 style="margin-bottom:2px;">Dr. {{ doc.user.get_full_name }}</h3>
+          <p class="muted" style="font-size:0.85rem;">{{ doc.specialization }}</p>
+          <span class="badge badge-primary">{{ doc.hospital.name|default:"Independent" }}</span>
+        </div>
+      {% empty %}
+        <div class="empty-state" style="grid-column: 1/-1;">
+          <h3>No doctors listed yet</h3>
+          <p>Approved doctors will be featured here once they join the platform.</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Featured hospitals</span>
+      <h2>Registered healthcare partners</h2>
+    </div>
+    <div class="grid-3">
+      {% for h in featured_hospitals %}
+        <div class="card">
+          <h3>{{ h.name }}</h3>
+          <p>{{ h.city }}, {{ h.state }}</p>
+          <span class="badge badge-primary">Verified</span>
+        </div>
+      {% empty %}
+        <div class="empty-state" style="grid-column: 1/-1;">
+          <h3>No hospitals onboarded yet</h3>
+          <p>Approved hospitals will appear here once a system administrator verifies them.</p>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="text-align:center;">
+    <h2>Ready to bring your medical history with you?</h2>
+    <p style="max-width:480px; margin:0 auto 24px;">Register in minutes and get your QR-verified Medical ID instantly.</p>
+    <a href="{% url 'users:register_choice' %}" class="btn btn-primary">Create your account</a>
+  </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends "partials/app_shell.html" %}
+{% block title %}Emergency access — MedGrid{% endblock %}
+{% block role_tag %}Doctor{% endblock %}
+{% block sidebar %}{% include "partials/doctor_sidebar.html" with active="emergency" %}{% endblock %}
+{% block main_content %}
+<div class="emergency-banner" style="margin: -36px -40px 28px; padding-left:40px;">
+  <strong>⛑ Limited access</strong> — This patient hasn't shared their records with you. You may view critical emergency information only. Every access is logged and visible to the patient.
+</div>
+{% if critical_info %}
+  {% include "partials/_critical_info.html" %}
+{% else %}
+  <div class="app-header"><div><span class="eyebrow mono">{{ patient.medical_id }}</span><h1>Emergency access</h1></div></div>
+  {% if error %}<div class="alert alert-error" style="max-width:480px;">{{ error }}</div>{% endif %}
+  <form method="post" class="card" style="max-width:480px;">
+    {% csrf_token %}
+    <div class="form-group"><label>Reason for emergency access</label><input type="text" name="reason" required minlength="5" maxlength="255" placeholder="e.g. Unconscious patient, ER intake"></div>
+    <button class="btn btn-alert btn-block" type="submit">Show critical information</button>
+  </form>
+  <p class="muted" style="margin-top:14px;">Not an emergency? <a href="{% url 'doctors:search_patient' %}?q={{ patient.medical_id }}">Ask the patient for access instead</a>.</p>
+{% endif %}
+{% endblock %}

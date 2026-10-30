@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}QR code not valid — MedGrid{% endblock %}
+{% block content %}
+<section class="section"><div class="container" style="max-width:560px;">
+  <div class="empty-state">
+    {% if throttled %}<h3>Too many invalid attempts</h3><p>Please wait a few minutes before scanning again.</p>
+    {% else %}<h3>This QR code is not valid</h3><p>It may have been replaced, disabled or expired. Ask the patient to show their current QR code.</p>{% endif %}
+    <a href="{% url 'dashboard:home' %}" class="btn btn-primary">Back to dashboard</a>
+  </div>
+</div></section>
+{% endblock %}

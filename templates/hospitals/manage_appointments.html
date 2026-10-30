@@ -1,0 +1,27 @@
+{% extends "partials/app_shell.html" %}
+{% block title %}Appointments — MedGrid{% endblock %}
+{% block role_tag %}Hospital Admin{% endblock %}
+{% block sidebar %}
+  <a href="{% url 'dashboard:home' %}" class="sidebar-link">Overview</a>
+  <a href="{% url 'hospitals:manage_departments' %}" class="sidebar-link">Departments</a>
+  <a href="{% url 'hospitals:manage_doctors' %}" class="sidebar-link">Doctors</a>
+  <a href="{% url 'hospitals:manage_staff' %}" class="sidebar-link">Staff</a>
+  <a href="{% url 'hospitals:manage_appointments' %}" class="sidebar-link">Appointments</a>
+  <a href="{% url 'hospitals:share_requests' %}" class="sidebar-link">Record Sharing</a>
+{% endblock %}
+{% block main_content %}
+<div class="app-header"><div><span class="eyebrow">{{ hospital.name }}</span><h1>Appointments</h1></div></div>
+{% if appointments %}
+<table class="data-table">
+  <thead><tr><th>Patient</th><th>Doctor</th><th>Date</th><th>Time</th><th>Status</th></tr></thead>
+  <tbody>
+  {% for a in appointments %}
+    <tr><td>{{ a.patient.user.get_full_name }}</td><td>Dr. {{ a.doctor.user.get_full_name }}</td><td>{{ a.appointment_date }}</td><td>{{ a.appointment_time }}</td>
+    <td><span class="badge badge-info">{{ a.get_status_display }}</span></td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="empty-state"><h3>No appointments yet</h3></div>
+{% endif %}
+{% endblock %}

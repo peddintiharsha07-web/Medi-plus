@@ -1,0 +1,21 @@
+{% extends "partials/app_shell.html" %}
+{% block title %}Emergency Access — MedGrid{% endblock %}
+{% block role_tag %}Doctor{% endblock %}
+{% block sidebar %}{% include "partials/doctor_sidebar.html" with active="emergency" %}{% endblock %}
+{% block main_content %}
+<div class="emergency-banner" style="margin: -36px -40px 28px; padding-left:40px;">
+  <strong>⛑ Emergency Access Mode</strong> — Only critical, life-saving information is shown. Every access is logged and visible to the patient in their access history.
+</div>
+<div class="app-header"><div><span class="eyebrow">One-click access</span><h1>Emergency patient lookup</h1></div></div>
+
+<form method="post" class="card" style="max-width:480px; margin-bottom:24px;">
+  {% csrf_token %}
+  <div class="form-group"><label>Scanned QR link</label><input type="text" name="token" placeholder="https://…/q/xxxxxxxx-xxxx-…/" required></div>
+  <div class="form-group"><label>Reason for emergency access</label><input type="text" name="reason" required minlength="5" placeholder="e.g. Unconscious patient, ER intake"></div>
+  <button class="btn btn-alert btn-block" type="submit">Get critical info now</button>
+</form>
+
+{% if error %}<div class="alert alert-error" style="max-width:480px;">{{ error }}</div>{% endif %}
+
+{% if patient %}{% include "partials/_critical_info.html" %}{% endif %}
+{% endblock %}

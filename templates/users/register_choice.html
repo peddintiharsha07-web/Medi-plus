@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Register — MedGrid{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container text-center">
+    <span class="eyebrow">Join MedGrid</span>
+    <h1>How would you like to register?</h1>
+  </div>
+</section>
+<section class="section section-alt">
+  <div class="container grid-3">
+    <div class="card text-center">
+      <div class="icon" style="margin:0 auto 16px;">◍</div>
+      <h3>Patient</h3>
+      <p>Get your Medical ID and QR code instantly. Access your full health history anywhere.</p>
+      <a href="{% url 'users:register_patient' %}" class="btn btn-primary btn-block">Register as patient</a>
+    </div>
+    <div class="card text-center">
+      <div class="icon" style="margin:0 auto 16px;">✚</div>
+      <h3>Doctor</h3>
+      <p>Manage patient records, prescriptions, and appointments. Requires admin approval.</p>
+      <a href="{% url 'users:register_doctor' %}" class="btn btn-primary btn-block">Register as doctor</a>
+    </div>
+    <div class="card text-center">
+      <div class="icon" style="margin:0 auto 16px;">⌂</div>
+      <h3>Hospital</h3>
+      <p>Onboard your hospital, manage doctors and departments. Requires admin approval.</p>
+      <a href="{% url 'users:register_hospital' %}" class="btn btn-primary btn-block">Register a hospital</a>
+    </div>
+  </div>
+  <p class="text-center" style="margin-top:30px;">System administrator? Use the <a href="/admin/">Django admin panel</a> to sign in.</p>
+</section>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "partials/app_shell.html" %}
+{% block title %}My Documents — MedGrid{% endblock %}
+{% block role_tag %}Patient{% endblock %}
+{% block sidebar %}{% include "partials/patient_sidebar.html" with active="documents" %}{% endblock %}
+{% block main_content %}
+<div class="app-header">
+  <div><span class="eyebrow">{{ profile.medical_id }}</span><h1>My Documents</h1></div>
+  <a href="{% url 'medical_records:document_upload' %}" class="btn btn-primary">+ Upload a record</a>
+</div>
+<p class="muted" style="margin-bottom:16px;">Prescriptions, lab reports, certificates and history you store yourself. Only you — and doctors you've given access to, for records marked “shared” — can see them.</p>
+<div class="chip-row">
+  <a href="{% url 'medical_records:document_list' %}" class="chip{% if not category %} chip-active{% endif %}">All</a>
+  {% for value, label in categories %}<a href="?category={{ value }}" class="chip{% if category == value %} chip-active{% endif %}">{{ label }}</a>{% endfor %}
+</div>
+{% if documents %}
+<div class="doc-list">
+  {% for d in documents %}
+  <div class="card doc-row">
+    <div style="flex:1; min-width:220px;">
+      <span class="badge badge-primary">{{ d.get_category_display }}</span>
+      {% if not d.shared_with_doctors %}<span class="badge badge-info">Private</span>{% endif %}
+      <h3 style="margin:8px 0 2px;">{{ d.title }}</h3>
+      <div class="muted" style="font-size:0.85rem;">{{ d.record_date|date:"M d, Y" }}{% if d.provider_name %} · {{ d.provider_name }}{% endif %}</div>
+      {% if d.description %}<p style="margin:8px 0 0;">{{ d.description|truncatechars:160 }}</p>{% endif %}
+    </div>
+    <div class="doc-actions">
+      {% if d.file %}
+        <a class="btn btn-sm btn-primary" href="{% url 'medical_records:file' 'document' d.pk %}" target="_blank" rel="noopener">View</a>
+        <a class="btn btn-sm btn-outline" href="{% url 'medical_records:file' 'document' d.pk %}?download=1">Download</a>
+      {% endif %}
+      <a class="btn btn-sm btn-outline" href="{% url 'medical_records:document_edit' d.pk %}">Edit</a>
+      <form method="post" action="{% url 'medical_records:document_delete' d.pk %}" onsubmit="return confirm('Delete this record permanently?');" style="display:inline;">
+        {% csrf_token %}<button class="btn btn-sm btn-outline" type="submit">Delete</button>
+      </form>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state"><h3>No records here yet</h3><p>Upload a PDF or a photo of a report to get started.</p></div>
+{% endif %}
+{% endblock %}

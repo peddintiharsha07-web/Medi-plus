@@ -1,0 +1,11 @@
+<div class="emergency-panel" style="max-width:560px;">
+  <h3>{{ patient.user.get_full_name }} — {{ patient.medical_id }}</h3>
+  <table class="data-table" style="margin-top:14px;">
+    <tr><td><strong>Blood group</strong></td><td>{{ critical_info.blood_group }}</td></tr>
+    <tr><td><strong>Allergies</strong></td><td>{{ critical_info.allergies|join:", "|default:"None recorded" }}</td></tr>
+    <tr><td><strong>Current medications</strong></td><td>{{ critical_info.current_medications|default:"None recorded" }}</td></tr>
+    <tr><td><strong>Chronic diseases</strong></td><td>{{ critical_info.chronic_diseases|default:"None recorded" }}</td></tr>
+    <tr><td><strong>Emergency contact</strong></td><td>{{ critical_info.emergency_contact_name }} — {{ critical_info.emergency_contact_phone }}</td></tr>
+    <tr><td><strong>Organ donor</strong></td><td>{{ critical_info.organ_donor|yesno:"Yes,No" }}</td></tr>
+  </table>
+</div>

@@ -1,0 +1,18 @@
+{% extends "partials/app_shell.html" %}
+{% block title %}Consent required — MedGrid{% endblock %}
+{% block role_tag %}Doctor{% endblock %}
+{% block sidebar %}{% include "partials/doctor_sidebar.html" with active="search" %}{% endblock %}
+{% block main_content %}
+<div class="app-header"><div><span class="eyebrow">Access restricted</span><h1>Patient consent required</h1></div></div>
+<div class="card" style="max-width:560px;">
+  <p>You don't currently have this patient's permission to view their medical records.</p>
+  <p class="muted">You can ask the patient to share them. They will see your request under “Privacy &amp; Access” and decide how long, and what, to allow.</p>
+  <form method="post" action="{% url 'consents:request_access' %}">
+    {% csrf_token %}
+    <input type="hidden" name="medical_id" value="{{ patient.medical_id }}">
+    <input type="hidden" name="next_url" value="{% url 'doctors:my_patients' %}">
+    <div class="form-group"><label>Note to the patient (optional)</label><input type="text" name="note" maxlength="255" placeholder="e.g. Follow-up consultation on Friday"></div>
+    <button class="btn btn-primary" type="submit">Request access</button>
+  </form>
+</div>
+{% endblock %}

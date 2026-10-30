@@ -1,0 +1,31 @@
+# Optional Render Blueprint. If your service already exists, you do NOT need this file:
+# just add the environment variables listed in .env.example to the existing service.
+services:
+  - type: web
+    name: medgrid
+    runtime: python
+    rootDir: .                      # the folder that contains manage.py
+    buildCommand: ./build.sh
+    startCommand: gunicorn medrecord_system.wsgi:application --workers 3 --timeout 60
+    healthCheckPath: /healthz/
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      # Durable private storage for medical documents (pick ONE option, see README):
+      - key: AWS_STORAGE_BUCKET_NAME
+        sync: false
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_S3_ENDPOINT_URL      # blank for AWS; e.g. https://<account>.r2.cloudflarestorage.com for R2
+        sync: false
+      - key: AWS_S3_REGION_NAME
+        sync: false
+databases:
+  - name: medgrid-db
+    plan: free

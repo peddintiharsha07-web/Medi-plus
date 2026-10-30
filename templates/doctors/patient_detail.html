@@ -1,0 +1,49 @@
+{% extends "partials/app_shell.html" %}
+{% block title %}{{ patient.user.get_full_name }} — MedGrid{% endblock %}
+{% block role_tag %}Doctor{% endblock %}
+{% block sidebar %}{% include "partials/doctor_sidebar.html" with active="mypatients" %}{% endblock %}
+{% block main_content %}
+<div class="app-header">
+  <div><span class="eyebrow mono">{{ patient.medical_id }}</span><h1>{{ patient.user.get_full_name }}</h1>
+    <p class="muted">{% if age is not None %}{{ age }} yrs · {% endif %}{{ patient.get_gender_display|default:"—" }} · Blood group {{ patient.get_blood_group_display }}{% if patient.user.phone_number %} · {{ patient.user.phone_number }}{% endif %}</p></div>
+  {% if access.can_add_consultation %}<a href="{% url 'doctors:create_record' patient.medical_id %}" class="btn btn-primary">+ New consultation note</a>{% endif %}
+</div>
+<div class="alert alert-info">Shared with you by the patient{% if access.grant.expires_at %} until {{ access.grant.expires_at|date:"M d, Y" }}{% endif %} — {{ access.grant.get_scope_display }}. Your access is logged and visible to the patient.</div>
+
+<div class="grid-2" style="margin-bottom:20px;">
+  <div class="card"><h3>Allergies</h3>
+    {% for a in allergies %}<div style="padding:6px 0; border-top:1px solid var(--line);"><strong>{{ a.allergen }}</strong>{% if a.reaction %} — {{ a.reaction }}{% endif %} <span class="badge badge-alert">{{ a.get_severity_display }}</span></div>{% empty %}<p class="muted">None recorded.</p>{% endfor %}
+    <h3 style="margin-top:16px;">Vaccinations</h3>
+    {% for v in vaccinations %}<div style="padding:6px 0; border-top:1px solid var(--line);">{{ v.vaccine_name }} <span class="muted">· {{ v.date_administered }}</span></div>{% empty %}<p class="muted">None recorded.</p>{% endfor %}
+  </div>
+  <div class="card"><h3>Health information</h3>
+    <p><strong>Chronic conditions:</strong> {{ patient.chronic_diseases|default:"—" }}</p>
+    <p><strong>Current medications:</strong> {{ patient.current_medications|default:"—" }}</p>
+    <p><strong>Height / weight:</strong> {{ patient.height_cm|default:"—" }} cm / {{ patient.weight_kg|default:"—" }} kg</p>
+    <p><strong>Emergency contact:</strong> {{ patient.emergency_contact_name|default:"—" }} {{ patient.emergency_contact_phone }}</p>
+  </div>
+</div>
+
+<h2 style="font-size:1.2rem;">Consultations &amp; treatment history</h2>
+{% for r in records %}
+<details class="card" style="margin-bottom:12px;">
+  <summary><strong>{{ r.consultation_date|date:"M d, Y" }}</strong> — {{ r.diagnosis|truncatechars:60|default:"Consultation" }} <span class="muted">· Dr. {{ r.doctor.user.get_full_name|default:"—" }}{% if r.hospital %}, {{ r.hospital.name }}{% endif %}</span></summary>
+  <p><strong>Symptoms:</strong> {{ r.symptoms|default:"—" }}</p>
+  <p><strong>Diagnosis:</strong> {{ r.diagnosis|default:"—" }}</p>
+  <p><strong>Treatment:</strong> {{ r.treatment_details|default:"—" }}</p>
+  <p><strong>Follow-up:</strong> {{ r.follow_up_notes|default:"—" }}</p>
+  {% if r.discharge_summary %}<p><strong>Discharge summary:</strong> {{ r.discharge_summary }}</p>{% endif %}
+  {% for p in r.prescriptions.all %}<div style="padding:6px 0; border-top:1px solid var(--line);">💊 <strong>{{ p.medication_name }}</strong> {{ p.dosage }} · {{ p.frequency }} {{ p.duration }}{% if p.file %} <a class="btn btn-sm btn-outline" href="{% url 'medical_records:file' 'prescription' p.pk %}" target="_blank" rel="noopener">File</a>{% endif %}</div>{% endfor %}
+  {% for l in r.lab_reports.all %}<div style="padding:6px 0; border-top:1px solid var(--line);">🧪 <strong>{{ l.title }}</strong> {{ l.report_date }}{% if l.file %} <a class="btn btn-sm btn-outline" href="{% url 'medical_records:file' 'labreport' l.pk %}" target="_blank" rel="noopener">Open</a>{% endif %}</div>{% endfor %}
+  {% for a in r.attachments.all %}<div style="padding:6px 0; border-top:1px solid var(--line);">📎 {{ a.description|default:"Attachment" }}{% if a.file %} <a class="btn btn-sm btn-outline" href="{% url 'medical_records:file' 'attachment' a.pk %}" target="_blank" rel="noopener">Open</a>{% endif %}</div>{% endfor %}
+</details>
+{% empty %}<p class="muted">No consultations recorded yet.</p>{% endfor %}
+
+<h2 style="font-size:1.2rem; margin-top:28px;">Documents uploaded by the patient</h2>
+{% for d in documents %}
+<div class="card doc-row" style="margin-bottom:10px;"><div style="flex:1;"><span class="badge badge-primary">{{ d.get_category_display }}</span>
+  <strong style="margin-left:6px;">{{ d.title }}</strong> <span class="muted">· {{ d.record_date|date:"M d, Y" }}{% if d.provider_name %} · {{ d.provider_name }}{% endif %}</span>
+  {% if d.description %}<p style="margin:6px 0 0;">{{ d.description }}</p>{% endif %}</div>
+  {% if d.file %}<a class="btn btn-sm btn-outline" href="{% url 'medical_records:file' 'document' d.pk %}" target="_blank" rel="noopener">Open</a>{% endif %}</div>
+{% empty %}<p class="muted">The patient has not shared any documents.</p>{% endfor %}
+{% endblock %}

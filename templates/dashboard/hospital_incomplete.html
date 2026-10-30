@@ -1,0 +1,10 @@
+{% extends "partials/app_shell.html" %}
+{% block role_tag %}Hospital Admin{% endblock %}
+{% block sidebar %}<a href="{% url 'hospitals:complete_profile' %}" class="sidebar-link active">Complete Profile</a>{% endblock %}
+{% block main_content %}
+<div class="empty-state">
+  <h3>Register your hospital</h3>
+  <p>Add your hospital's details to get started. A system administrator will need to approve it.</p>
+  <a href="{% url 'hospitals:complete_profile' %}" class="btn btn-primary">Add hospital details</a>
+</div>
+{% endblock %}

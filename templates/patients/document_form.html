@@ -1,0 +1,28 @@
+{% extends "partials/app_shell.html" %}
+{% block title %}{% if editing %}Edit record{% else %}Upload a record{% endif %} — MedGrid{% endblock %}
+{% block role_tag %}Patient{% endblock %}
+{% block sidebar %}{% include "partials/patient_sidebar.html" with active="documents" %}{% endblock %}
+{% block main_content %}
+<a href="{% url 'medical_records:document_list' %}" class="muted" style="font-size:0.85rem;">← Back to my documents</a>
+<div class="app-header" style="margin-top:10px;"><div><span class="eyebrow">{% if editing %}Edit details{% else %}New record{% endif %}</span><h1>{% if editing %}Edit record{% else %}Upload a record{% endif %}</h1></div></div>
+<form method="post" {% if not editing %}enctype="multipart/form-data"{% endif %} class="card" style="max-width:640px;" id="docForm">
+  {% csrf_token %}
+  {% if form.non_field_errors %}<div class="alert alert-error">{{ form.non_field_errors }}</div>{% endif %}
+  {% include "partials/_field.html" with field=form.category %}
+  {% include "partials/_field.html" with field=form.title %}
+  <div class="form-row">
+    <div>{% include "partials/_field.html" with field=form.record_date %}</div>
+    <div>{% include "partials/_field.html" with field=form.provider_name %}</div>
+  </div>
+  {% if not editing %}{% include "partials/_field.html" with field=form.file %}{% endif %}
+  {% include "partials/_field.html" with field=form.description %}
+  <div class="form-group"><label style="display:flex; gap:8px; align-items:center;">{{ form.shared_with_doctors }} {{ form.shared_with_doctors.label }}</label>
+    <small class="muted">{{ form.shared_with_doctors.help_text }}</small></div>
+  <button type="submit" class="btn btn-primary btn-block" id="docSubmit">{% if editing %}Save changes{% else %}Upload{% endif %}</button>
+</form>
+<script>
+  document.getElementById('docForm').addEventListener('submit', function () {
+    var b = document.getElementById('docSubmit'); b.disabled = true; b.textContent = 'Saving…';
+  });
+</script>
+{% endblock %}

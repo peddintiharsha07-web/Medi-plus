@@ -1,0 +1,39 @@
+{% extends "partials/app_shell.html" %}
+{% block title %}My Appointments — MedGrid{% endblock %}
+{% block role_tag %}Doctor{% endblock %}
+{% block sidebar %}{% include "partials/doctor_sidebar.html" with active="appts" %}{% endblock %}
+{% block main_content %}
+<div class="app-header"><div><span class="eyebrow">Schedule</span><h1>My Appointments</h1></div></div>
+{% if appointments %}
+<table class="data-table">
+  <thead><tr><th>Patient</th><th>Date</th><th>Time</th><th>Reason</th><th>Status</th><th>Action</th></tr></thead>
+  <tbody>
+    {% for a in appointments %}
+    <tr>
+      <td>{{ a.patient.user.get_full_name }} <span class="mono muted">({{ a.patient.medical_id }})</span></td>
+      <td>{{ a.appointment_date }}</td>
+      <td>{{ a.appointment_time }}</td>
+      <td>{{ a.reason|truncatechars:30 }}</td>
+      <td><span class="badge badge-info">{{ a.get_status_display }}</span></td>
+      <td>
+        {% if a.status == 'PENDING' %}
+        <form method="post" action="{% url 'doctors:update_appointment_status' a.id %}" style="display:inline;">
+          {% csrf_token %}<input type="hidden" name="status" value="ACCEPTED"><button class="btn btn-sm btn-primary" type="submit">Accept</button>
+        </form>
+        <form method="post" action="{% url 'doctors:update_appointment_status' a.id %}" style="display:inline;">
+          {% csrf_token %}<input type="hidden" name="status" value="REJECTED"><button class="btn btn-sm btn-outline" type="submit">Reject</button>
+        </form>
+        {% elif a.status == 'ACCEPTED' %}
+        <form method="post" action="{% url 'doctors:update_appointment_status' a.id %}" style="display:inline;">
+          {% csrf_token %}<input type="hidden" name="status" value="COMPLETED"><button class="btn btn-sm btn-primary" type="submit">Mark completed</button>
+        </form>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="empty-state"><h3>No appointments yet</h3></div>
+{% endif %}
+{% endblock %}

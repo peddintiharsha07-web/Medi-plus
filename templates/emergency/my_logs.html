@@ -1,0 +1,19 @@
+{% extends "partials/app_shell.html" %}
+{% block title %}Emergency Access Log — MedGrid{% endblock %}
+{% block role_tag %}Patient{% endblock %}
+{% block sidebar %}{% include "partials/patient_sidebar.html" with active="emlog" %}{% endblock %}
+{% block main_content %}
+<div class="app-header"><div><span class="eyebrow">Transparency</span><h1>Emergency Access Log</h1></div></div>
+{% if logs %}
+<table class="data-table">
+  <thead><tr><th>Date</th><th>Accessed by</th><th>Reason</th></tr></thead>
+  <tbody>
+  {% for log in logs %}
+    <tr><td>{{ log.accessed_at }}</td><td>Dr. {{ log.accessed_by.user.get_full_name|default:"Unknown" }}</td><td>{{ log.reason|default:"—" }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="empty-state"><h3>No emergency access on record</h3><p>You'll be notified here whenever your emergency information is accessed.</p></div>
+{% endif %}
+{% endblock %}

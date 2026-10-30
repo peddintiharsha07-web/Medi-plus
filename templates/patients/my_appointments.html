@@ -1,0 +1,35 @@
+{% extends "partials/app_shell.html" %}
+{% block title %}My Appointments — MedGrid{% endblock %}
+{% block role_tag %}Patient{% endblock %}
+{% block sidebar %}{% include "partials/patient_sidebar.html" with active="appts" %}{% endblock %}
+{% block main_content %}
+<div class="app-header">
+  <div><span class="eyebrow">Schedule</span><h1>My Appointments</h1></div>
+  <a href="{% url 'patients:book_appointment' %}" class="btn btn-primary">Book new</a>
+</div>
+{% if appointments %}
+<table class="data-table">
+  <thead><tr><th>Doctor</th><th>Hospital</th><th>Date</th><th>Time</th><th>Status</th><th></th></tr></thead>
+  <tbody>
+    {% for a in appointments %}
+    <tr>
+      <td>Dr. {{ a.doctor.user.get_full_name }}</td>
+      <td>{{ a.hospital.name|default:"—" }}</td>
+      <td>{{ a.appointment_date }}</td>
+      <td>{{ a.appointment_time }}</td>
+      <td><span class="badge badge-info">{{ a.get_status_display }}</span></td>
+      <td>
+        {% if a.status == 'PENDING' or a.status == 'ACCEPTED' %}
+        <form method="post" action="{% url 'patients:cancel_appointment' a.id %}">
+          {% csrf_token %}<button class="btn btn-sm btn-outline" type="submit">Cancel</button>
+        </form>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="empty-state"><h3>No appointments yet</h3><a href="{% url 'patients:book_appointment' %}" class="btn btn-primary">Book your first appointment</a></div>
+{% endif %}
+{% endblock %}

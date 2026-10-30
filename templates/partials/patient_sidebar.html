@@ -1,0 +1,10 @@
+<a href="{% url 'dashboard:home' %}" class="sidebar-link{% if active == 'overview' %} active{% endif %}">Overview</a>
+<a href="{% url 'patients:my_records' %}" class="sidebar-link{% if active == 'records' %} active{% endif %}">Medical Records</a>
+<a href="{% url 'medical_records:document_list' %}" class="sidebar-link{% if active == 'documents' %} active{% endif %}">My Documents</a>
+<a href="{% url 'patients:my_qr_card' %}" class="sidebar-link{% if active == 'qr' %} active{% endif %}">My Medical ID &amp; QR</a>
+<a href="{% url 'consents:privacy_center' %}" class="sidebar-link{% if active == 'privacy' %} active{% endif %}">Privacy &amp; Access</a>
+<a href="{% url 'patients:book_appointment' %}" class="sidebar-link{% if active == 'book' %} active{% endif %}">Book Appointment</a>
+<a href="{% url 'patients:my_appointments' %}" class="sidebar-link{% if active == 'appts' %} active{% endif %}">My Appointments</a>
+<a href="{% url 'emergency:my_logs' %}" class="sidebar-link{% if active == 'emlog' %} active{% endif %}">Emergency Access Log</a>
+<a href="{% url 'patients:edit_profile' %}" class="sidebar-link{% if active == 'profile' %} active{% endif %}">Health Profile</a>
+<a href="{% url 'users:profile' %}" class="sidebar-link{% if active == 'account' %} active{% endif %}">Account</a>

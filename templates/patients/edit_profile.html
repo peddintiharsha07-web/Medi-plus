@@ -1,0 +1,59 @@
+{% extends "partials/app_shell.html" %}
+{% block title %}Health Profile — MedGrid{% endblock %}
+{% block role_tag %}Patient{% endblock %}
+{% block sidebar %}{% include "partials/patient_sidebar.html" with active="profile" %}{% endblock %}
+{% block main_content %}
+<div class="app-header"><div><span class="eyebrow">{{ profile.medical_id }}</span><h1>Health profile</h1></div></div>
+<form method="post" class="card" style="max-width:700px; margin-bottom:24px;">
+  {% csrf_token %}
+  <h3>Personal details</h3>
+  <div class="form-row">
+    <div>{% include "partials/_field.html" with field=user_form.first_name %}</div>
+    <div>{% include "partials/_field.html" with field=user_form.last_name %}</div>
+  </div>
+  <div class="form-row">
+    <div>{% include "partials/_field.html" with field=user_form.email %}</div>
+    <div>{% include "partials/_field.html" with field=user_form.phone_number %}</div>
+  </div>
+  {% include "partials/_field.html" with field=user_form.date_of_birth %}
+  {% include "partials/_field.html" with field=user_form.address %}
+  <h3 style="margin-top:20px;">Health details</h3>
+  <div class="form-row">
+    <div>{% include "partials/_field.html" with field=health_form.gender %}</div>
+    <div>{% include "partials/_field.html" with field=health_form.blood_group %}</div>
+  </div>
+  <div class="form-row">
+    <div>{% include "partials/_field.html" with field=health_form.height_cm %}</div>
+    <div>{% include "partials/_field.html" with field=health_form.weight_kg %}</div>
+  </div>
+  <div class="form-row">
+    <div>{% include "partials/_field.html" with field=health_form.emergency_contact_name %}</div>
+    <div>{% include "partials/_field.html" with field=health_form.emergency_contact_phone %}</div>
+  </div>
+  {% include "partials/_field.html" with field=health_form.chronic_diseases %}
+  {% include "partials/_field.html" with field=health_form.current_medications %}
+  <div class="form-group"><label style="display:flex; gap:8px; align-items:center;">{{ health_form.organ_donor }} {{ health_form.organ_donor.label }}</label></div>
+  <button type="submit" class="btn btn-primary">Save changes</button>
+  <a href="{% url 'users:password_change' %}" class="btn btn-outline">Change password</a>
+</form>
+
+<div class="card" style="max-width:700px;">
+  <h3>Allergies</h3>
+  <p class="muted">Shown to emergency responders and to doctors you've given access to.</p>
+  {% for a in allergies %}
+    <div class="doc-row" style="padding:8px 0; border-top:1px solid var(--line); gap:10px;">
+      <div style="flex:1;"><strong>{{ a.allergen }}</strong>{% if a.reaction %} — {{ a.reaction }}{% endif %} <span class="badge badge-info">{{ a.get_severity_display }}</span></div>
+      <form method="post" action="{% url 'patients:allergy_delete' a.pk %}">{% csrf_token %}<button class="btn btn-sm btn-outline" type="submit">Remove</button></form>
+    </div>
+  {% empty %}<p class="muted">No allergies recorded.</p>{% endfor %}
+  <form method="post" action="{% url 'patients:allergy_add' %}" style="margin-top:14px;">
+    {% csrf_token %}
+    <div class="form-row">
+      <div>{% include "partials/_field.html" with field=allergy_form.allergen %}</div>
+      <div>{% include "partials/_field.html" with field=allergy_form.severity %}</div>
+    </div>
+    {% include "partials/_field.html" with field=allergy_form.reaction %}
+    <button class="btn btn-outline" type="submit">Add allergy</button>
+  </form>
+</div>
+{% endblock %}

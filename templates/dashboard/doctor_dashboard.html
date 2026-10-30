@@ -1,0 +1,56 @@
+{% extends "partials/app_shell.html" %}
+{% block title %}Doctor Dashboard — MedGrid{% endblock %}
+{% block role_tag %}Doctor{% endblock %}
+{% block sidebar %}{% include "partials/doctor_sidebar.html" with active="overview" %}{% endblock %}
+{% block main_content %}
+<div class="app-header">
+  <div>
+    <span class="eyebrow">Welcome back</span>
+    <h1>Dr. {{ user.get_full_name }}</h1>
+    <p class="muted">{{ profile.specialization }} · {{ profile.hospital.name|default:"Independent practice" }}</p>
+  </div>
+  <a href="{% url 'doctors:search_patient' %}" class="btn btn-primary">Look up a patient</a>
+</div>
+
+<div class="grid-4" style="margin-bottom:32px;">
+  <div class="stat-card"><div class="stat-value">{{ total_patients }}</div><div class="stat-label">Authorized Patients</div></div>
+  <div class="stat-card"><div class="stat-value">{{ todays_appointments|length }}</div><div class="stat-label">Today's Appointments</div></div>
+  <div class="stat-card"><div class="stat-value">{{ pending_appointments|length }}</div><div class="stat-label">Pending Requests</div></div>
+  <div class="stat-card"><div class="stat-value">{{ pending_access_requests }}</div><div class="stat-label">Awaiting Consent</div></div>
+</div>
+
+<div class="card" style="margin-bottom:20px;">
+  <h3>My patients <a href="{% url 'doctors:my_patients' %}" class="muted" style="font-size:0.85rem; font-weight:400;">view all →</a></h3>
+  {% for p in authorized_patients %}<div style="padding:8px 0; border-top:1px solid var(--line);"><a href="{% url 'doctors:patient_detail' p.medical_id %}"><strong>{{ p.user.get_full_name }}</strong></a> <span class="mono muted">{{ p.medical_id }}</span></div>
+  {% empty %}<p class="muted">No patient has shared records with you yet. Look up a patient by Medical ID to request access.</p>{% endfor %}
+</div>
+<div class="grid-2">
+  <div class="card">
+    <h3>Today's schedule</h3>
+    {% for a in todays_appointments %}
+      <div style="padding:10px 0; border-top:1px solid var(--line);">
+        <strong>{{ a.patient.user.get_full_name }}</strong> ({{ a.patient.medical_id }}) — {{ a.appointment_time }}
+        <br><span class="badge badge-info">{{ a.get_status_display }}</span>
+      </div>
+    {% empty %}<p class="muted">No appointments scheduled for today.</p>{% endfor %}
+  </div>
+  <div class="card">
+    <h3>Pending appointment requests</h3>
+    {% for a in pending_appointments %}
+      <div style="padding:10px 0; border-top:1px solid var(--line);">
+        <strong>{{ a.patient.user.get_full_name }}</strong> — {{ a.appointment_date }} at {{ a.appointment_time }}
+        <form method="post" action="{% url 'doctors:update_appointment_status' a.id %}" style="display:inline; margin-top:6px;">
+          {% csrf_token %}
+          <input type="hidden" name="status" value="ACCEPTED">
+          <button class="btn btn-sm btn-primary" type="submit">Accept</button>
+        </form>
+        <form method="post" action="{% url 'doctors:update_appointment_status' a.id %}" style="display:inline;">
+          {% csrf_token %}
+          <input type="hidden" name="status" value="REJECTED">
+          <button class="btn btn-sm btn-outline" type="submit">Reject</button>
+        </form>
+      </div>
+    {% empty %}<p class="muted">No pending requests.</p>{% endfor %}
+  </div>
+</div>
+{% endblock %}

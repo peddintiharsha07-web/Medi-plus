@@ -1,0 +1,40 @@
+{% extends "partials/app_shell.html" %}
+{% block title %}Record Detail — MedGrid{% endblock %}
+{% block role_tag %}Patient{% endblock %}
+{% block sidebar %}{% include "partials/patient_sidebar.html" with active="records" %}{% endblock %}
+{% block main_content %}
+<a href="{% url 'patients:my_records' %}" class="muted" style="font-size:0.85rem;">← Back to records</a>
+<div class="app-header" style="margin-top:10px;">
+  <div><span class="eyebrow">{{ record.consultation_date|date:"M d, Y" }}</span><h1>Consultation with Dr. {{ record.doctor.user.get_full_name|default:"—" }}</h1></div>
+  <span class="badge badge-primary">{{ record.get_status_display }}</span>
+</div>
+<div class="grid-2">
+  <div class="card">
+    <h3>Diagnosis</h3><p>{{ record.diagnosis|default:"—" }}</p>
+    <h3>Symptoms</h3><p>{{ record.symptoms|default:"—" }}</p>
+    <h3>Treatment details</h3><p>{{ record.treatment_details|default:"—" }}</p>
+    <h3>Follow-up notes</h3><p>{{ record.follow_up_notes|default:"—" }}</p>
+    {% if record.discharge_summary %}<h3>Discharge summary</h3><p>{{ record.discharge_summary }}</p>{% endif %}
+  </div>
+  <div>
+    <div class="card" style="margin-bottom:20px;">
+      <h3>Prescriptions</h3>
+      {% for p in record.prescriptions.all %}
+        <div style="padding:8px 0; border-top:1px solid var(--line);">
+          <strong>{{ p.medication_name }}</strong> — {{ p.dosage }} · {{ p.frequency }}
+          {% if p.file %}<br><a href="{% url 'medical_records:file' 'prescription' p.pk %}" class="btn btn-sm btn-outline" style="margin-top:6px;">Download</a>{% endif %}
+        </div>
+      {% empty %}<p class="muted">No prescriptions.</p>{% endfor %}
+    </div>
+    <div class="card">
+      <h3>Lab reports</h3>
+      {% for l in record.lab_reports.all %}
+        <div style="padding:8px 0; border-top:1px solid var(--line);">
+          <strong>{{ l.title }}</strong> — {{ l.report_date }}
+          {% if l.file %}<br><a href="{% url 'medical_records:file' 'labreport' l.pk %}" class="btn btn-sm btn-outline" style="margin-top:6px;">Download</a>{% endif %}
+        </div>
+      {% empty %}<p class="muted">No lab reports.</p>{% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

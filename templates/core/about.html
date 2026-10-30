@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}About MedGrid{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container">
+    <span class="eyebrow">About the platform</span>
+    <h1 style="max-width:640px;">Built to make a patient's history follow them, not their paperwork.</h1>
+    <p style="max-width:620px; font-size:1.05rem;">
+      MedGrid is a centralized digital medical record management system. It connects patients,
+      doctors, hospital administrators, and system administrators on a single secure platform —
+      so a patient's diagnosis history, prescriptions, and lab reports are one QR scan away,
+      no matter which registered hospital they walk into.
+    </p>
+  </div>
+</section>
+<section class="section section-alt">
+  <div class="container grid-3">
+    <div class="card">
+      <div class="icon">◈</div>
+      <h3>Our mission</h3>
+      <p>Remove the friction of fragmented paper records and give every patient one continuous digital health identity.</p>
+    </div>
+    <div class="card">
+      <div class="icon">⚿</div>
+      <h3>Security first</h3>
+      <p>Role-based access control, encrypted credentials, and a full audit trail on every sensitive action — including emergency access.</p>
+    </div>
+    <div class="card">
+      <div class="icon">⟲</div>
+      <h3>Built for scale</h3>
+      <p>A modular Django REST architecture supports multi-hospital growth, multilingual users, and thousands of records.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

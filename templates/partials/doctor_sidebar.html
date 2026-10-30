@@ -1,0 +1,7 @@
+<a href="{% url 'dashboard:home' %}" class="sidebar-link{% if active == 'overview' %} active{% endif %}">Overview</a>
+<a href="{% url 'doctors:my_patients' %}" class="sidebar-link{% if active == 'mypatients' %} active{% endif %}">My Patients</a>
+<a href="{% url 'doctors:search_patient' %}" class="sidebar-link{% if active == 'search' %} active{% endif %}">Search Patient</a>
+<a href="{% url 'doctors:scan_qr' %}" class="sidebar-link{% if active == 'scan' %} active{% endif %}">Scan QR Code</a>
+<a href="{% url 'doctors:my_appointments' %}" class="sidebar-link{% if active == 'appts' %} active{% endif %}">Appointments</a>
+{% if user.doctor_profile.is_emergency_authorized %}<a href="{% url 'emergency:access' %}" class="sidebar-link{% if active == 'emergency' %} active{% endif %}">Emergency Access</a>{% endif %}
+<a href="{% url 'users:profile' %}" class="sidebar-link{% if active == 'account' %} active{% endif %}">Account</a>

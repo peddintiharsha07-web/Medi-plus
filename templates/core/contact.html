@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Contact — MedGrid{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container" style="max-width:600px;">
+    <span class="eyebrow">Contact</span>
+    <h1>Talk to the MedGrid team</h1>
+    <form method="post" class="form-card form-card-wide" style="margin-top: 20px;">
+      {% csrf_token %}
+      <div class="form-row">
+        <div class="form-group"><label>Name</label><input type="text" name="name" required></div>
+        <div class="form-group"><label>Email</label><input type="email" name="email" required></div>
+      </div>
+      <div class="form-group"><label>Message</label><textarea name="message" required></textarea></div>
+      <button type="submit" class="btn btn-primary btn-block">Send message</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

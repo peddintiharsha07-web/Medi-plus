@@ -1,0 +1,49 @@
+{% extends "partials/app_shell.html" %}
+{% block title %}Hospital Dashboard — MedGrid{% endblock %}
+{% block role_tag %}Hospital Admin{% endblock %}
+{% block sidebar %}
+  <a href="{% url 'dashboard:home' %}" class="sidebar-link active">Overview</a>
+  <a href="{% url 'hospitals:manage_departments' %}" class="sidebar-link">Departments</a>
+  <a href="{% url 'hospitals:manage_doctors' %}" class="sidebar-link">Doctors</a>
+  <a href="{% url 'hospitals:manage_staff' %}" class="sidebar-link">Staff</a>
+  <a href="{% url 'hospitals:manage_appointments' %}" class="sidebar-link">Appointments</a>
+  <a href="{% url 'hospitals:share_requests' %}" class="sidebar-link">Record Sharing</a>
+  <a href="{% url 'users:profile' %}" class="sidebar-link">Account</a>
+{% endblock %}
+{% block main_content %}
+<div class="app-header">
+  <div>
+    <span class="eyebrow">{{ hospital.status }}</span>
+    <h1>{{ hospital.name }}</h1>
+    <p class="muted">{{ hospital.city }}, {{ hospital.state }}</p>
+  </div>
+  <a href="{% url 'hospitals:manage_doctors' %}" class="btn btn-primary">Manage Doctors</a>
+</div>
+
+<div class="grid-4" style="margin-bottom:32px;">
+  <div class="stat-card"><div class="stat-value">{{ total_doctors }}</div><div class="stat-label">Doctors</div></div>
+  <div class="stat-card"><div class="stat-value">{{ total_patients }}</div><div class="stat-label">Patients Treated</div></div>
+  <div class="stat-card"><div class="stat-value">{{ todays_appointments }}</div><div class="stat-label">Today's Appointments</div></div>
+  <div class="stat-card"><div class="stat-value">{{ departments|length }}</div><div class="stat-label">Departments</div></div>
+</div>
+
+<div class="grid-2">
+  <div class="card">
+    <h3>Recent appointments</h3>
+    {% for a in recent_appointments %}
+      <div style="padding:10px 0; border-top:1px solid var(--line);">
+        <strong>{{ a.patient.user.get_full_name }}</strong> with Dr. {{ a.doctor.user.get_full_name }} — {{ a.appointment_date }}
+        <br><span class="badge badge-info">{{ a.get_status_display }}</span>
+      </div>
+    {% empty %}<p class="muted">No appointments yet.</p>{% endfor %}
+  </div>
+  <div class="card">
+    <h3>Pending record-share requests</h3>
+    {% for r in pending_share_requests %}
+      <div style="padding:10px 0; border-top:1px solid var(--line);">
+        <strong>{{ r.patient.medical_id }}</strong> — {{ r.reason|default:"No reason given" }}
+      </div>
+    {% empty %}<p class="muted">No pending requests.</p>{% endfor %}
+  </div>
+</div>
+{% endblock %}

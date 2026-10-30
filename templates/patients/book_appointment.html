@@ -1,0 +1,19 @@
+{% extends "partials/app_shell.html" %}
+{% block title %}Book Appointment — MedGrid{% endblock %}
+{% block role_tag %}Patient{% endblock %}
+{% block sidebar %}{% include "partials/patient_sidebar.html" with active="book" %}{% endblock %}
+{% block main_content %}
+<div class="app-header"><div><span class="eyebrow">Schedule a visit</span><h1>Book an appointment</h1></div></div>
+<form method="post" class="card" style="max-width:560px;">
+  {% csrf_token %}
+  {% include "partials/_field.html" with field=form.doctor %}
+  <div class="form-row">
+    <div>{% include "partials/_field.html" with field=form.appointment_date %}</div>
+    <div>{% include "partials/_field.html" with field=form.appointment_time %}</div>
+  </div>
+  {% include "partials/_field.html" with field=form.reason %}
+  <div class="form-group"><label style="display:flex; gap:8px; align-items:flex-start;">{{ form.share_records }} <span>{{ form.share_records.label }}</span></label>
+    <small class="muted">Optional. You can remove access at any time under Privacy &amp; Access.</small></div>
+  <button type="submit" class="btn btn-primary btn-block">Request appointment</button>
+</form>
+{% endblock %}

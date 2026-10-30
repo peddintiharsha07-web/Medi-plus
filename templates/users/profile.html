@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}My Profile — MedGrid{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container" style="max-width:600px;">
+    <span class="eyebrow">Account</span>
+    <h1>{{ user_obj.get_full_name }}</h1>
+    <div class="card">
+      <p><strong>Username:</strong> {{ user_obj.username }}</p>
+      <p><strong>Email:</strong> {{ user_obj.email }}</p>
+      <p><strong>Role:</strong> <span class="badge badge-primary">{{ user_obj.get_role_display }}</span></p>
+      <p><strong>Status:</strong> <span class="badge badge-info">{{ user_obj.get_status_display }}</span></p>
+      <p><strong>Phone:</strong> {{ user_obj.phone_number|default:"—" }}</p>
+      <a href="{% url 'users:password_change' %}" class="btn btn-outline btn-sm">Change password</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

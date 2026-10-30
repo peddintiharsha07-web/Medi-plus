@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Sign in — MedGrid{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="form-card">
+      <span class="eyebrow">Welcome back</span>
+      <h2>Sign in to MedGrid</h2>
+      <form method="post">
+        {% csrf_token %}
+        {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+        <div class="form-group"><label>Username</label><input type="text" name="username" required autocomplete="username"></div>
+        <div class="form-group"><label>Password</label><input type="password" name="password" required autocomplete="current-password"></div>
+        <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+      </form>
+      <p style="text-align:center; margin-top:16px; font-size:0.88rem;">New here? <a href="{% url 'users:register_choice' %}">Create an account</a></p>
+    </div>
+  </div>
+</section>
+{% endblock %}

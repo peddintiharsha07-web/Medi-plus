@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="app-shell">
+  <aside class="app-sidebar">
+    <span class="role-tag">{% block role_tag %}Account{% endblock %}</span>
+    {% block sidebar %}{% endblock %}
+  </aside>
+  <main class="app-main">
+    {% block main_content %}{% endblock %}
+  </main>
+</div>
+{% endblock %}

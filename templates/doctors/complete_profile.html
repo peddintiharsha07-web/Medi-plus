@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Complete Profile — MedGrid{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="form-card">
+      <span class="eyebrow">One last step</span>
+      <h2>Complete your doctor profile</h2>
+      <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="form-group"><label>{{ field.label }}</label>{{ field }}</div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary btn-block">Save profile</button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

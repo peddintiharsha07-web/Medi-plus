@@ -1,0 +1,21 @@
+{% extends "partials/app_shell.html" %}
+{% block title %}My Patients — MedGrid{% endblock %}
+{% block role_tag %}Doctor{% endblock %}
+{% block sidebar %}{% include "partials/doctor_sidebar.html" with active="mypatients" %}{% endblock %}
+{% block main_content %}
+<div class="app-header"><div><span class="eyebrow">Consent-based access</span><h1>My patients</h1></div>
+  <a href="{% url 'doctors:search_patient' %}" class="btn btn-primary">Request access to a patient</a></div>
+<div class="card" style="margin-bottom:20px;"><h3>Patients who shared their records with you</h3>
+  {% for g in active %}
+  <div class="doc-row" style="padding:12px 0; border-top:1px solid var(--line);">
+    <div style="flex:1;"><strong>{{ g.patient.user.get_full_name }}</strong> <span class="mono muted">{{ g.patient.medical_id }}</span>
+      <div class="muted" style="font-size:0.85rem;">{{ g.get_scope_display }} · until {{ g.expires_at|date:"M d, Y"|default:"further notice" }}</div></div>
+    <a class="btn btn-sm btn-primary" href="{% url 'doctors:patient_detail' g.patient.medical_id %}">Open records</a>
+  </div>
+  {% empty %}<p class="muted">No patient has granted you access yet.</p>{% endfor %}
+</div>
+{% if pending %}<div class="card" style="margin-bottom:20px;"><h3>Waiting for the patient's decision</h3>
+  {% for g in pending %}<div style="padding:8px 0; border-top:1px solid var(--line);">{{ g.patient.medical_id }} — requested {{ g.created_at|date:"M d, Y" }}</div>{% endfor %}</div>{% endif %}
+{% if ended %}<div class="card"><h3>Ended or declined</h3>
+  {% for g in ended %}<div style="padding:8px 0; border-top:1px solid var(--line);">{{ g.patient.medical_id }} — <span class="badge badge-info">{{ g.state_label }}</span></div>{% endfor %}</div>{% endif %}
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "partials/app_shell.html" %}
+{% block title %}Approve Hospitals — MedGrid{% endblock %}
+{% block role_tag %}System Administrator{% endblock %}
+{% block sidebar %}
+  <a href="{% url 'dashboard:home' %}" class="sidebar-link">Overview</a>
+  <a href="{% url 'administration:pending_hospitals' %}" class="sidebar-link">Approve Hospitals</a>
+  <a href="{% url 'administration:pending_doctors' %}" class="sidebar-link">Approve Doctors</a>
+  <a href="{% url 'administration:manage_patients' %}" class="sidebar-link">Patients</a>
+  <a href="{% url 'administration:manage_hospitals' %}" class="sidebar-link">Hospitals</a>
+  <a href="{% url 'administration:manage_doctors' %}" class="sidebar-link">Doctors</a>
+  <a href="{% url 'administration:audit_logs' %}" class="sidebar-link">Audit Logs</a>
+  <a href="{% url 'administration:analytics' %}" class="sidebar-link">Analytics</a>
+{% endblock %}
+{% block main_content %}
+<div class="app-header"><div><span class="eyebrow">Approvals</span><h1>Pending Hospitals</h1></div></div>
+{% if hospitals %}
+{% for h in hospitals %}
+<div class="card" style="margin-bottom:14px;">
+  <div class="flex" style="justify-content:space-between; align-items:center;">
+    <div>
+      <h3 style="margin-bottom:2px;">{{ h.name }}</h3>
+      <p class="muted">{{ h.city }}, {{ h.state }} · Reg #{{ h.registration_number }} · Admin: {{ h.admin.get_full_name }}</p>
+    </div>
+    <div class="flex gap-10">
+      <form method="post" action="{% url 'administration:approve_hospital' h.id %}">{% csrf_token %}<button class="btn btn-primary" type="submit">Approve</button></form>
+      <form method="post" action="{% url 'administration:reject_hospital' h.id %}">{% csrf_token %}<button class="btn btn-outline" type="submit">Reject</button></form>
+    </div>
+  </div>
+</div>
+{% endfor %}
+{% else %}
+<div class="empty-state"><h3>No pending hospitals</h3></div>
+{% endif %}
+{% endblock %}

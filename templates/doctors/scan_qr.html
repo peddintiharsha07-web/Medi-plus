@@ -1,0 +1,18 @@
+{% extends "partials/app_shell.html" %}
+{% block title %}Scan QR — MedGrid{% endblock %}
+{% block role_tag %}Doctor{% endblock %}
+{% block sidebar %}{% include "partials/doctor_sidebar.html" with active="scan" %}{% endblock %}
+{% block main_content %}
+<div class="app-header"><div><span class="eyebrow">Patient health card</span><h1>Scan a patient's QR code</h1></div></div>
+<div class="card" style="max-width:520px; margin-bottom:20px;">
+  <h3>Using a phone</h3>
+  <p>Point your phone camera at the patient's QR code and open the link. You'll be asked to sign in, then see exactly what the patient allows.</p>
+</div>
+<form method="post" class="card" style="max-width:520px;">
+  {% csrf_token %}
+  <h3>Or paste the scanned link</h3>
+  <div class="form-group"><input type="text" name="token" placeholder="https://…/q/xxxxxxxx-xxxx-…/" required></div>
+  {% if error %}<div class="alert alert-error">{{ error }}</div>{% endif %}
+  <button class="btn btn-primary btn-block" type="submit">Continue</button>
+</form>
+{% endblock %}
