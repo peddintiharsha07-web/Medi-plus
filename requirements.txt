@@ -15,4 +15,4 @@ razorpay==2.0.1
 reportlab==5.1.0
 python-decouple==3.8
 python-dotenv==1.2.4
-requests==2.34.2git add -A
+requests==2.34.2
