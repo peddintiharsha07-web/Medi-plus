@@ -3,25 +3,23 @@
 {% block content %}
 <section class="section">
   <div class="container">
-    <div class="form-card">
+    <div class="form-card form-card-wide">
       <span class="eyebrow">Hospital registration</span>
       <h2>Register your hospital</h2>
-      <p class="help-text" style="margin-bottom:18px;">Create your administrator login first. You'll add hospital details and await approval next.</p>
-      <form method="post">
+      <p class="help-text" style="margin-bottom:18px;">Enter the administrator and hospital details. Both will be submitted for system administrator approval.</p>
+      <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="form-group"><label>First name</label>{{ form.first_name }}</div>
-        <div class="form-group"><label>Last name</label>{{ form.last_name }}</div>
-        <div class="form-group"><label>Username</label>{{ form.username }}</div>
-        <div class="form-group"><label>Email</label>{{ form.email }}</div>
-        <div class="form-group"><label>Phone number</label>{{ form.phone_number }}</div>
-        <div class="form-group"><label>Password</label>{{ form.password1 }}</div>
-        <div class="form-group"><label>Confirm password</label>{{ form.password2 }}</div>
-        {% if form.errors %}
-          <ul class="errorlist">
-            {% for field in form %}{% for error in field.errors %}<li>{{ field.label }}: {{ error }}</li>{% endfor %}{% endfor %}
-          </ul>
-        {% endif %}
-        <button type="submit" class="btn btn-primary btn-block">Continue</button>
+        <h3>Hospital administrator details</h3>
+        {% for field in form %}
+          {% if field.name == 'hospital_name' %}<h3 style="margin-top:22px;">Hospital details</h3>{% endif %}
+          <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% for error in field.errors %}<small class="errorlist">{{ error }}</small>{% endfor %}
+          </div>
+        {% endfor %}
+        {% if form.non_field_errors %}<ul class="errorlist">{% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
+        <button type="submit" class="btn btn-primary btn-block">Submit hospital for approval</button>
       </form>
       <p style="text-align:center; margin-top:16px; font-size:0.88rem;">Already have an account? <a href="{% url 'users:login' %}">Sign in</a></p>
     </div>
