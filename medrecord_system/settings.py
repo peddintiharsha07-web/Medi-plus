@@ -52,7 +52,7 @@ if not SECRET_KEY:
         raise ImproperlyConfigured(
             'DJANGO_SECRET_KEY environment variable is required when DJANGO_DEBUG is off.')
 
-ALLOWED_HOSTS = env_list('DJANGO_ALLOWED_HOSTS')
+ALLOWED_HOSTS = ["*"]
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')  # set automatically by Render
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
