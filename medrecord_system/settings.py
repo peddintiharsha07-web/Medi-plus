@@ -42,7 +42,7 @@ RUNNING_TESTS = len(sys.argv) > 1 and sys.argv[1] == 'test'
 # ---------------------------------------------------------------------------
 # Core security
 # ---------------------------------------------------------------------------
-DEBUG = env_bool('DJANGO_DEBUG', False)  # OFF unless explicitly enabled
+DEBUG = False  # OFF unless explicitly enabled
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', '')
 if not SECRET_KEY:
@@ -52,14 +52,21 @@ if not SECRET_KEY:
         raise ImproperlyConfigured(
             'DJANGO_SECRET_KEY environment variable is required when DJANGO_DEBUG is off.')
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    "medi-plus-omega.vercel.app",
+    ".vercel.app",
+    "localhost",
+    "127.0.0.1",
+]
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')  # set automatically by Render
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 if DEBUG and not ALLOWED_HOSTS:
     ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
-
-CSRF_TRUSTED_ORIGINS = env_list('CSRF_TRUSTED_ORIGINS')
+CSRF_TRUSTED_ORIGINS = [
+    "https://medi-plus-omega.vercel.app",
+    "https://*.vercel.app",
+]
 if RENDER_EXTERNAL_HOSTNAME:
     CSRF_TRUSTED_ORIGINS.append(f'https://{RENDER_EXTERNAL_HOSTNAME}')
 
