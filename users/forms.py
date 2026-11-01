@@ -1,3 +1,9 @@
+from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.db import transaction
+from hospitals.models import Hospital
+from .models import User
+
 class HospitalAdminRegistrationForm(UserCreationForm):
     # Hospital administrator details
     email = forms.EmailField(required=True)
